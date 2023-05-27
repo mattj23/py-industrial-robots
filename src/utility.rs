@@ -1,5 +1,5 @@
-use industrial_robots::{Isometry3, Matrix4, Vector3, try_convert};
 use industrial_robots::robot::FanucLrMate200id;
+use industrial_robots::{try_convert, Isometry3, Matrix4, Vector3};
 
 pub fn fanuc_with_joints(joints: Vec<f64>) -> FanucLrMate200id {
     // TODO: Decide if we should verify if there are at least six joints
@@ -28,17 +28,15 @@ pub fn from_mat4(mat: Matrix4<f64>) -> Vec<f64> {
     py_list
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn mat4_orders_correctly() {
-        let test_list = vec![1.0, 2.0, 3.0, 4.0,
-                             5.0, 6.0, 7.0, 8.0,
-                             9.0, 10.0, 11.0, 12.0,
-                             13.0, 14.0, 15.0, 16.0];
+        let test_list = vec![
+            1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0,
+        ];
         let mat = to_mat4(test_list);
         assert_eq!(mat[(0, 0)], 1.0);
         assert_eq!(mat[(0, 1)], 2.0);
@@ -57,5 +55,4 @@ mod tests {
         assert_eq!(mat[(3, 2)], 15.0);
         assert_eq!(mat[(3, 3)], 16.0);
     }
-
 }

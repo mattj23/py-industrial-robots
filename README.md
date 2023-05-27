@@ -54,5 +54,38 @@ target = list(target_pose.flat)
 new_joints = fanuc_ik(target, current_joints)
 ```
 
+***Note:** I currently use lists to move numbers back and forth across the boundary of Python and the compiled Rust binaries because I have yet to figure out how to use the Rust `numpy` package to create native `numpy` arrays.*
 
+## Building
 
+The goal is to be able to cross compile libraries for x86_64 Windows and Linux in a Linux based build environment.  I've managed to do that locally with the following.
+
+### Prerequisites
+
+* The Rust toolchain must be installed first
+* MinGW-w64 must be installed. On Debian based systems this is the `mingw-w64` package.
+* `llvm` must be installed, on Debian based systems this is the `llvm` package.
+* The Windows target must be added to the Rust toolchain.  This can be done with `rustup target add x86_64-pc-windows-msvc`. There is a `-gnu` version as well, but the default Python Windows binaries are built with MSVC.
+* Python must be installed and `maturin` must be installed into the Python environment.  This can be done with `pip install maturin`.
+
+Example on Debian/Ubuntu build environment:
+
+```bash
+sudo apt-get install mingw-w64 llvm curl python3 python3-pip 
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup target add x86_64-pc-windows-msvc
+
+# Install maturin into the Python environment, if you're not in a container you 
+probably want to do this in a virtualenv 
+pip3 install maturin
+```
+
+### Building
+
+```bash
+# Build for Linux
+maturin build --release --strip
+
+# Build for Windows
+maturin build --release --strip --target x86_64-pc-windows-msvc
+```
