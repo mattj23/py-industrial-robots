@@ -67,8 +67,8 @@ checksum = "bfa799dd5ed20a7e349f3b4639aa80d74549c81716d9ec4f994c9b5815598306"
 
 [[package]]
 name = "industrial-robots"
-version = "0.1.0"
-source = "git+https://github.com/mattj23/industrial-robots.git?branch=main#271c06b9fb6e9ebcb0b8eedfa9178dab133c7880"
+version = "0.1.1"
+source = "git+https://github.com/mattj23/industrial-robots.git?branch=main#0b4c88a1dc2603818a50d057af2288b07889866c"
 dependencies = [
  "k",
 ]

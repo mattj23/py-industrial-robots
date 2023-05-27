@@ -1,23 +1,41 @@
+mod utility;
+
 use pyo3::prelude::*;
-use industrial_robots::robot::FanucLrMate200id;
+use industrial_robots::{Isometry3, Matrix4, Vector3, try_convert};
 use pyo3::types::PyList;
 use numpy::ndarray::prelude::*;
+use utility::{fanuc_with_joints, to_mat4, from_mat4};
 
-/// Formats the sum of two numbers as string.
+
 #[pyfunction]
-fn fanuc_fk(j1: f64, j2: f64, j3: f64, j4: f64, j5: f64, j6: f64) -> PyResult<Vec<f64>> {
-    let mut robot = FanucLrMate200id::new();
-    robot.set_joints(&[j1, j2, j3, j4, j5, j6]);
+fn fanuc_fk(joints: Vec<f64>) -> PyResult<Vec<f64>> {
+    let mut robot = fanuc_with_joints(joints);
     let pose = robot.end_pose();
-    let mat = pose.to_matrix();
-    let py_list = mat.iter().map(|x| x.to_owned()).collect::<Vec<f64>>();
-    Ok(py_list)
+    Ok(from_mat4(pose.to_matrix()))
+}
+
+#[pyfunction]
+fn fanuc_ik(target_pose: Vec<f64>, starting_joints: Vec<f64>) -> PyResult<Vec<f64>> {
+    let mut robot = fanuc_with_joints(starting_joints);
+
+    let pose = to_mat4(target_pose);
+    let target: Isometry3<f64> = try_convert(pose).unwrap();
+    println!("target: {:?}", target);
+    println!("target: {:?}", target);
+
+    if let Some(joints) = robot.find_joints(&target) {
+        let py_list = joints.iter().map(|x| x.to_owned()).collect::<Vec<f64>>();
+        Ok(py_list)
+    }
+    else {
+        Err(pyo3::exceptions::PyValueError::new_err("No solution found"))
+    }
 }
 
 
-/// A Python module implemented in Rust.
 #[pymodule]
 fn industrial_robots_py(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(fanuc_fk, m)?)?;
+    m.add_function(wrap_pyfunction!(fanuc_ik, m)?)?;
     Ok(())
 }
