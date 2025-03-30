@@ -41,4 +41,3 @@ pub fn array_to_faces(array: &ArrayViewD<'_, u32>) -> PyResult<Vec<[u32; 3]>> {
         .map(|row| [row[0], row[1], row[2]])
         .collect())
 }
-

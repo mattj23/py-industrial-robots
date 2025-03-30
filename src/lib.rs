@@ -1,9 +1,9 @@
 use pyo3::prelude::*;
 
-mod utility;
 mod conversions;
 mod fanuc;
 mod mesh;
+mod utility;
 
 fn register_fanuc_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
     let child = PyModule::new(parent_module.py(), "_fanuc")?;
@@ -14,7 +14,6 @@ fn register_fanuc_module(parent_module: &Bound<'_, PyModule>) -> PyResult<()> {
 
 #[pymodule(name = "industrial_robots")]
 fn py_industrial_robots(m: &Bound<'_, PyModule>) -> PyResult<()> {
-
     register_fanuc_module(m)?;
 
     m.add_class::<utility::Frame3>()?;

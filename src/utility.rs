@@ -1,10 +1,10 @@
-use industrial_robots::nalgebra::{try_convert, Matrix4};
-use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
-use numpy::ndarray::ArrayD;
-use pyo3::exceptions::PyValueError;
-use pyo3::IntoPyObjectExt;
-use pyo3::prelude::*;
 use crate::conversions::{array_to_points3, array_to_vectors3};
+use industrial_robots::nalgebra::{try_convert, Matrix4};
+use numpy::ndarray::ArrayD;
+use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
+use pyo3::IntoPyObjectExt;
 
 #[pyclass]
 #[derive(Debug, Clone)]
@@ -63,7 +63,8 @@ impl Frame3 {
 
     #[staticmethod]
     fn from_rotation(angle: f64, a: f64, b: f64, c: f64) -> Self {
-        let axis = industrial_robots::UnitVector3::new_normalize(industrial_robots::Vector3::new(a, b, c));
+        let axis =
+            industrial_robots::UnitVector3::new_normalize(industrial_robots::Vector3::new(a, b, c));
         let rot_vec = axis.into_inner() * angle;
 
         Self {
@@ -77,10 +78,7 @@ impl Frame3 {
         }
     }
 
-    fn __matmul__(
-        &self,
-        other: &Frame3,
-    ) -> PyResult<Self> {
+    fn __matmul__(&self, other: &Frame3) -> PyResult<Self> {
         Ok(Frame3::from_inner(self.inner * other.inner))
     }
 
@@ -151,9 +149,7 @@ impl Frame3 {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
 }
