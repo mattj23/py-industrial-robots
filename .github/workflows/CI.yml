@@ -24,11 +24,11 @@ jobs:
     strategy:
       matrix:
         platform:
-          - runner: ubuntu-22.04
+          - runner: ubuntu-24.04
             target: x86_64
           #          - runner: ubuntu-22.04
           #            target: x86
-          - runner: ubuntu-22.04
+          - runner: ubuntu-24.04
             target: aarch64
     #          - runner: ubuntu-22.04
     #            target: armv7
@@ -43,8 +43,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - name: Install CMake
-        uses: ssrobins/install-cmake@v1
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
