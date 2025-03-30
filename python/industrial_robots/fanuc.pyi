@@ -43,3 +43,11 @@ class Crx:
         :return: a list of tuples, each containing a numpy array of vertices and a numpy array of faces
         """
         ...
+
+    def forward_with_links(self, joints: List[float]) -> List[Frame3]:
+        """
+        Compute the forward kinematics of the FANUC CRX robot with all links.
+        :param joints: a list of 6 FANUC joint angles in degrees, the way they would be entered into the controller
+        :return: a list of Frame3 objects representing the pose of each link, including the end-effector
+        """
+        ...

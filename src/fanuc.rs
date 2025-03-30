@@ -66,4 +66,20 @@ impl Crx {
         let frame = self.inner.forward(&joints);
         Ok(Frame3::from_inner(frame))
     }
+
+    fn forward_with_links(
+        &self,
+        joints: Vec<f64>,
+    ) -> PyResult<Vec<Frame3>> {
+        if joints.len() != 6 {
+            return Err(PyValueError::new_err("Expected 6 joint angles"));
+        }
+        let joints: [f64; 6] = [
+            joints[0], joints[1], joints[2], joints[3], joints[4], joints[5],
+        ];
+        let results = self.inner.forward_with_links(&joints);
+
+        // Convert the results to a Vec<Frame3>
+        Ok(results.map(|f| Frame3::from_inner(f)).to_vec())
+    }
 }
