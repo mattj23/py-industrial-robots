@@ -30,7 +30,8 @@ impl Crx {
         let mut result = Vec::new();
         let meshes = match self.crx_type {
             CrxType::Crx5ia => Ok(industrial_robots::fanuc::crx5ia_mesh()),
-            CrxType::Crx10ia => Err(PyValueError::new_err("Crx10ia does not have meshes")),
+            CrxType::Crx10ia => Ok(industrial_robots::fanuc::crx10ia_mesh()),
+            _ => Err(PyValueError::new_err("Unknown CRX type")),
         }?;
 
         for (vertices, faces) in meshes {
