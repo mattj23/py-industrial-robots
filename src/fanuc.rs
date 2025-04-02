@@ -56,6 +56,10 @@ impl Crx {
             crx_type: CrxType::Crx10ia,
         }
     }
+    
+    fn ik(&self, frame: &Frame3) {
+        self.inner.ik(&frame.get_inner())
+    }
 
     fn forward(&self, joints: Vec<f64>) -> PyResult<Frame3> {
         if joints.len() != 6 {
