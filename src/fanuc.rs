@@ -1,6 +1,7 @@
 use crate::mesh::mesh_to_numpy;
 use crate::utility::Frame3;
-use numpy::{PyArrayDyn, PyUntypedArrayMethods};
+use numpy::{IntoPyArray, PyArrayDyn, PyUntypedArrayMethods};
+use numpy::ndarray::ArrayD;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
@@ -55,6 +56,19 @@ impl Crx {
             inner: industrial_robots::fanuc::Crx::new_10ia(),
             crx_type: CrxType::Crx10ia,
         }
+    }
+    
+    fn o4_circle<'py>(&self, py: Python<'py>, end_frame: &Frame3) -> Bound<'py, PyArrayDyn<f64>> {
+        let points = self.inner.o4_circle(end_frame.get_inner());
+        
+        let mut result = ArrayD::zeros(vec![points.len(), 3]);
+        for (i, point) in points.iter().enumerate() {
+            result[[i, 0]] = point.x;
+            result[[i, 1]] = point.y;
+            result[[i, 2]] = point.z;
+        }
+        
+        result.into_pyarray(py)
     }
     
     fn ik(&self, frame: &Frame3) {
