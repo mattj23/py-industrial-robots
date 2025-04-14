@@ -58,35 +58,35 @@ impl Crx {
         }
     }
     
-    fn o4_circle<'py>(&self, py: Python<'py>, end_frame: &Frame3) -> Bound<'py, PyArrayDyn<f64>> {
-        let points = self.inner.o4_circle(end_frame.get_inner());
-        
-        let mut result = ArrayD::zeros(vec![points.len(), 3]);
-        for (i, point) in points.iter().enumerate() {
-            result[[i, 0]] = point.x;
-            result[[i, 1]] = point.y;
-            result[[i, 2]] = point.z;
-        }
-        
-        result.into_pyarray(py)
-    }
+    // fn o4_circle<'py>(&self, py: Python<'py>, end_frame: &Frame3) -> Bound<'py, PyArrayDyn<f64>> {
+    //     let points = self.inner.o4_circle(end_frame.get_inner());
+    //
+    //     let mut result = ArrayD::zeros(vec![points.len(), 3]);
+    //     for (i, point) in points.iter().enumerate() {
+    //         result[[i, 0]] = point.x;
+    //         result[[i, 1]] = point.y;
+    //         result[[i, 2]] = point.z;
+    //     }
+    //
+    //     result.into_pyarray(py)
+    // }
     
-    fn ik(&self, frame: &Frame3) {
-        self.inner.ik(&frame.get_inner())
-    }
+    // fn ik(&self, frame: &Frame3) {
+    //     self.inner.ik(&frame.get_inner())
+    // }
 
-    fn forward(&self, joints: Vec<f64>) -> PyResult<Frame3> {
+    fn fk(&self, joints: Vec<f64>) -> PyResult<Frame3> {
         if joints.len() != 6 {
             return Err(PyValueError::new_err("Expected 6 joint angles"));
         }
         let joints: [f64; 6] = [
             joints[0], joints[1], joints[2], joints[3], joints[4], joints[5],
         ];
-        let frame = self.inner.forward(&joints);
+        let frame = self.inner.fk(&joints);
         Ok(Frame3::from_inner(frame))
     }
 
-    fn forward_with_links(
+    fn fk_all(
         &self,
         joints: Vec<f64>,
     ) -> PyResult<Vec<Frame3>> {
@@ -96,7 +96,7 @@ impl Crx {
         let joints: [f64; 6] = [
             joints[0], joints[1], joints[2], joints[3], joints[4], joints[5],
         ];
-        let results = self.inner.forward_with_links(&joints);
+        let results = self.inner.fk_all(&joints);
 
         // Convert the results to a Vec<Frame3>
         Ok(results.map(|f| Frame3::from_inner(f)).to_vec())

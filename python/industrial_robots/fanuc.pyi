@@ -29,7 +29,7 @@ class Crx:
         ...
 
     @staticmethod
-    def forward(joints: List[float]) -> Frame3:
+    def fk(joints: List[float]) -> Frame3:
         """
         Compute the forward kinematics of the FANUC CRX robot.
         :param joints: a list of 6 FANUC joint angles in degrees, the way they would be entered into the controller
@@ -44,7 +44,7 @@ class Crx:
         """
         ...
 
-    def forward_with_links(self, joints: List[float]) -> List[Frame3]:
+    def fk_all(self, joints: List[float]) -> List[Frame3]:
         """
         Compute the forward kinematics of the FANUC CRX robot with all links.
         :param joints: a list of 6 FANUC joint angles in degrees, the way they would be entered into the controller
