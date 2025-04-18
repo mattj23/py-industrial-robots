@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple
+from typing import Tuple, List, Optional
 
 from numpy.typing import NDArray
 from numpy import uint32
@@ -127,3 +127,95 @@ class Frame3:
         Return a copy of the 4x4 matrix representation of the isometry.
         """
         ...
+
+
+class CollisionScene:
+    """
+    A class holding a collection of objects for fast testing of collisions and proximity. The objects are divided 
+    into two categories: background and interest.
+    
+    Background objects are essentially part of a background scene which don't need to be checked against each other,
+    while interest objects are ones which are by default checked against each other and the background objects.
+    
+    When a collision check or proximity check is performed, frames (isometries) may be given to provide a temporary
+    position for the object during the check, which allows the CollisionScene to account for motion without needing
+    to rebuild the object geometries. 
+    
+    Objects are added to the scene as one of the two types, and an unsigned integer is returned as a handle to the 
+    object. The handle is used to specify transformations, exclusions, and the results of checks.
+    """
+
+    def __len__(self):
+        """
+        Return the number of objects in the scene.
+        """
+        ...
+
+    def add_background(self, vertices: NDArray[float], faces: NDArray[uint32]) -> int:
+        """
+        Add a background object to the scene. Background objects are not checked against each other, but are checked
+        against interest objects.
+        
+        :param vertices: the vertices of the object.
+        :param faces: the faces of the object.
+        :return: an unsigned integer handle to the object.
+        """
+        ...
+
+    def add_interest(self, vertices: NDArray[float], faces: NDArray[uint32]) -> int:
+        """
+        Add an interest object to the scene. Interest objects are checked against each other and against background
+        objects.
+        
+        :param vertices: the vertices of the object.
+        :param faces: the faces of the object.
+        :return: an unsigned integer handle to the object.
+        """
+        ...
+
+    def remove_mesh(self, handle: int):
+        """
+        Remove a mesh from the scene.
+        
+        :param handle: the handle of the object to remove.
+        """
+        ...
+
+    def add_exclusion(self, handle1: int, handle2: int):
+        """
+        Add an exclusion between two objects. The objects will not be checked against each other.
+        
+        :param handle1: the first object.
+        :param handle2: the second object.
+        """
+        ...
+
+    def remove_exclusion(self, handle1: int, handle2: int):
+        """
+        Remove an exclusion between two objects. The objects will be checked against each other again.
+        
+        :param handle1: the first object.
+        :param handle2: the second object.
+        """
+        ...
+
+    def check_all(self, transforms: List[Tuple[int, Frame3]], stop_at_first: bool = False,
+                  skip_ids: Optional[List[int]] = None) -> List[Tuple[int, int]]:
+        """
+        Check all objects in the scene for collisions. The transforms are applied to the objects before the check.
+        
+        :param transforms: a list of tuples containing the handle and the transform to apply.
+        :param stop_at_first: if True, stop at the first collision found.
+        :param skip_ids: a list of object ids to skip during the check.
+        :return: a list of tuples containing the handles of the colliding objects.
+        """
+        ...
+
+    def distances(self, id1: int, id2: List[int], transforms: List[Tuple[int, Frame3]]) -> List[float]:
+        """
+        
+        :param id1: 
+        :param id2: 
+        :param transforms: 
+        :return: 
+        """

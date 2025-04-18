@@ -1,10 +1,9 @@
-use crate::conversions::{array_to_points3, array_to_vectors3};
+use crate::helpers::{array_to_points3, array_to_vectors3};
 use industrial_robots::nalgebra::{try_convert, Matrix4};
 use numpy::ndarray::ArrayD;
-use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArrayDyn, PyUntypedArrayMethods};
+use numpy::{IntoPyArray, PyArrayDyn, PyReadonlyArray2, PyReadonlyArrayDyn, PyUntypedArrayMethods};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::IntoPyObjectExt;
 
 #[pyclass]
 #[derive(Debug, Clone)]
@@ -35,6 +34,11 @@ impl Frame3 {
             self.inner.rotation.k,
             self.inner.rotation.w,
         )
+    }
+
+    #[getter]
+    fn origin(&self) -> (f64, f64, f64) {
+        (self.inner.translation.x, self.inner.translation.y, self.inner.translation.z)
     }
 
     #[new]
@@ -115,7 +119,7 @@ impl Frame3 {
     fn transform_points<'py>(
         &self,
         py: Python<'py>,
-        points: PyReadonlyArrayDyn<'py, f64>,
+        points: PyReadonlyArray2<'py, f64>,
     ) -> PyResult<Bound<'py, PyArrayDyn<f64>>> {
         let points = array_to_points3(&points.as_array())?;
         let mut result = ArrayD::zeros(vec![points.len(), 3]);
@@ -133,7 +137,7 @@ impl Frame3 {
     fn transform_vectors<'py>(
         &self,
         py: Python<'py>,
-        vectors: PyReadonlyArrayDyn<'py, f64>,
+        vectors: PyReadonlyArray2<'py, f64>,
     ) -> PyResult<Bound<'py, PyArrayDyn<f64>>> {
         let vectors = array_to_vectors3(&vectors.as_array())?;
         let mut result = ArrayD::zeros(vec![vectors.len(), 3]);
@@ -150,6 +154,4 @@ impl Frame3 {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-}
+mod tests {}
