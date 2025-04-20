@@ -128,6 +128,36 @@ class Frame3:
         """
         ...
 
+    @property
+    def origin(self) -> Tuple[float, float, float]:
+        """
+        Return the origin of the isometry as a tuple of floats.
+        """
+        ...
+
+    @staticmethod
+    def from_xyzwpr(x: float, y: float, z: float, w: float, p: float, r: float) -> Frame3:
+        """
+        Create an isometry from the specified translation and rotation angles in yaw, pitch, and roll format, following
+        the convention typically used in robotics. The angles are specified in degrees.
+        :param x:
+        :param y:
+        :param z:
+        :param w:
+        :param p:
+        :param r:
+        :return:
+        """
+        ...
+
+    def to_xyzwpr(self) -> List[float]:
+        """
+        Convert the isometry to a list of translation and rotation angles in yaw, pitch, and roll format, following the
+        convention typically used in robotics. The angles are returned in degrees.
+        :return: a list of 6 floats representing the translation and rotation angles.
+        """
+        ...
+
 
 class CollisionScene:
     """

@@ -38,7 +38,23 @@ impl Frame3 {
 
     #[getter]
     fn origin(&self) -> (f64, f64, f64) {
-        (self.inner.translation.x, self.inner.translation.y, self.inner.translation.z)
+        (
+            self.inner.translation.x,
+            self.inner.translation.y,
+            self.inner.translation.z,
+        )
+    }
+
+    #[staticmethod]
+    fn from_xyzwpr(x: f64, y: f64, z: f64, w: f64, p: f64, r: f64) -> Self {
+        Self {
+            inner: industrial_robots::XyzWpr::new(x, y, z, w, p, r).to_isometry(),
+        }
+    }
+
+    fn to_xyzwpr(&self) -> Vec<f64> {
+        let v = industrial_robots::XyzWpr::from_isometry(&self.inner);
+        vec![v.x, v.y, v.z, v.w, v.p, v.r]
     }
 
     #[new]
